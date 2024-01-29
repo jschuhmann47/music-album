@@ -1,22 +1,21 @@
 pub mod config;
 pub mod models;
-pub mod schema;
+
 
 use axum::{http::StatusCode, response::Html, routing::get, Json, Router};
-use diesel::{query_dsl::methods::SelectDsl, RunQueryDsl, SelectableHelper};
 use models::Album;
+
+#[derive(Debug)]
+pub enum PostError {
+    InternalServerError,
+}
 
 #[tokio::main]
 async fn main() {
     
-    let app = Router::new();
-    
-    app.route("/", get(handler));
-    app.route("/db", get(|| {
-        let res = db_handler();
-        (StatusCode::CREATED, Json(res))
-    }));
+    let app = Router::new().route("/", get(handler)); // error is doing app.route for some reason
 
+    // run it
     let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
         .await
         .unwrap();
@@ -24,14 +23,8 @@ async fn main() {
     axum::serve(listener, app).await.unwrap();
 }
 
-async fn handler() -> Html<&'static str> {
-    Html("<h1>Hello, World!</h1>")
-}
-
-async fn db_handler() -> Vec<Album> {
-    use self::schema::albums::dsl::*;
-
-    let db = &mut config::connect_to_db();
-
-    albums.select(Album::as_select()).load(db).expect("failed to select results")
+async fn handler() -> (StatusCode, Json<Album>){
+    // let db = &mut config::connect_to_db();
+    
+    (StatusCode::OK, Json(Album { id: 123, title: String::from("value"), artist: String::from("value"), cover: String::from("value"), year: 1234 }))
 }

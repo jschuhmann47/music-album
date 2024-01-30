@@ -1,6 +1,10 @@
+use diesel::prelude::*;
 use serde::Serialize;
 
 #[derive(Serialize)]
+#[derive(Queryable, Selectable)]
+#[diesel(table_name = crate::schema::albums)]
+#[diesel(check_for_backend(diesel::mysql::Mysql))]
 pub struct Album {
     pub id: i32,
     pub title: String,

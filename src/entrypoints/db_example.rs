@@ -4,8 +4,6 @@ use serde_json::Value;
 use crate::usecases;
 use super::rest;
 
-
-
 pub async fn handler() -> (StatusCode, Json<Value>){
     let res = usecases::db::execute();
     

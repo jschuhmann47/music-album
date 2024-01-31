@@ -15,6 +15,10 @@ mod usecases {
     pub mod db;
 }
 
+mod repository {
+    pub mod get_albums;
+}
+
 #[tokio::main]
 async fn main() {
     

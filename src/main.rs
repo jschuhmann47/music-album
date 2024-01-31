@@ -5,11 +5,15 @@ pub mod schema;
 use axum::{routing::get, Router};
 
 mod entrypoints {
-    pub mod example;
+    pub mod test_album;
     pub mod db_example;
     pub mod rest;
 }
 
+mod usecases {
+    pub mod test;
+    pub mod db;
+}
 
 #[tokio::main]
 async fn main() {
@@ -26,7 +30,7 @@ async fn main() {
 
 fn example_routes() -> Router {
     let router = Router::new()
-    .route("/", get(entrypoints::example::handler))
+    .route("/", get(entrypoints::test_album::handler))
     .route("/db", get(entrypoints::db_example::handler));
     router
 }

@@ -1,9 +1,15 @@
 pub mod config;
 pub mod models;
 pub mod schema;
-pub mod entrypoints;
 
 use axum::{routing::get, Router};
+
+mod entrypoints {
+    pub mod example;
+    pub mod db_example;
+    pub mod rest;
+}
+
 
 #[tokio::main]
 async fn main() {

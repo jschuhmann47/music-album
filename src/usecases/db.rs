@@ -1,7 +1,5 @@
-use diesel::result::Error;
+use crate::{config, models, repository};
 
-use crate::{models, repository};
-
-pub fn execute() -> Result<Vec<models::Album>, Error> {
-    repository::get_albums::get()
+pub fn execute(db_conn: config::DbPool) -> Result<Vec<models::Album>, diesel::result::Error> {
+    repository::get_albums::get(db_conn)
 }

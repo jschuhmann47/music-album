@@ -5,14 +5,14 @@ pub mod schema;
 use axum::{routing::get, Router};
 
 mod entrypoints {
-    pub mod test_album;
     pub mod db_example;
     pub mod rest;
+    pub mod test_album;
 }
 
 mod usecases {
-    pub mod test;
     pub mod db;
+    pub mod test;
 }
 
 mod repository {
@@ -21,10 +21,8 @@ mod repository {
 
 #[tokio::main]
 async fn main() {
-    
     let app = Router::new().merge(example_routes());
 
-    // run it
     let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
         .await
         .unwrap();
@@ -33,8 +31,10 @@ async fn main() {
 }
 
 fn example_routes() -> Router {
-    let router = Router::new()
-    .route("/", get(entrypoints::test_album::handler))
-    .route("/db", get(entrypoints::db_example::handler));
-    router
+    let db_conn = config::get_connection_pool();
+
+    Router::new()
+        .route("/", get(entrypoints::test_album::handler))
+        .route("/db", get(entrypoints::db_example::handler))
+        .with_state(db_conn)
 }

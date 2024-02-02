@@ -4,7 +4,7 @@ use serde_json::{json, Value};
 
 pub fn descf<T>(t: T) -> Json<Value>
 where
-T: Serialize 
+    T: Serialize,
 {
     Json(json!({"description": t}))
 }

@@ -1,6 +1,7 @@
 use diesel::RunQueryDsl;
 use diesel::{Connection, ExpressionMethods, QueryDsl, SelectableHelper};
 
+use crate::schema::albums::id;
 use crate::{config, models, schema};
 
 pub fn get(
@@ -29,6 +30,25 @@ pub fn create(
             .execute(db)?;
         albums::table
             .order(albums::id.desc())
+            .select(models::Album::as_select())
+            .first(db)
+    });
+    match res {
+        Ok(res) => Ok(res),
+        Err(_) => Err(diesel::result::Error::AlreadyInTransaction), //change this err
+    }
+}
+
+pub fn update(
+    db_conn: config::DbPool,
+    album: models::Album,
+) -> Result<models::Album, diesel::result::Error> {
+    use self::schema::albums;
+    let db = &mut db_conn.get().expect("error getting pool");
+
+    let res = db.transaction(|db| {
+        diesel::update(albums::table).filter(id.eq(album.id)).set(&album).execute(db)?;
+            albums::table.order(albums::id.desc())
             .select(models::Album::as_select())
             .first(db)
     });

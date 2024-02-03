@@ -6,16 +6,16 @@ use crate::{
 
 pub fn execute(
     db_conn: config::DbPool,
-    request: entrypoints::create_album::CreateRequest,
+    request: entrypoints::update_album::UpdateRequest,
 ) -> Result<models::Album, diesel::result::Error> {
     // TODO validate
     let album = models::Album {
-        id: 0,
+        id: request.id,
         title: request.title,
         artist: request.artist,
         cover: request.cover,
         year: request.year,
     };
 
-    repository::albums::create(db_conn, album)
+    repository::albums::update(db_conn, album)
 }

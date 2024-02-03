@@ -57,3 +57,21 @@ pub fn update(
         Err(_) => Err(diesel::result::Error::AlreadyInTransaction), //change this err
     }
 }
+
+pub fn delete(
+    db_conn: config::DbPool,
+    album_id: i32,
+) -> Result<(), diesel::result::Error> {
+    use self::schema::albums;
+    // todo define custom errors
+    let db = &mut db_conn.get().expect("error getting pool");
+   
+
+    let res = db.transaction(|db| {
+        diesel::delete(albums::table).filter(id.eq(album_id)).execute(db)
+    });
+    match res {
+        Ok(_) => Ok(()),
+        Err(_) => Err(diesel::result::Error::AlreadyInTransaction), //change this err
+    }
+}

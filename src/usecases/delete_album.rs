@@ -1,7 +1,4 @@
-use crate::{
-    config, entrypoints,
-    repository,
-};
+use crate::{config, entrypoints, repository};
 
 pub fn execute(
     db_conn: config::DbPool,

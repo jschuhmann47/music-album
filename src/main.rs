@@ -2,21 +2,26 @@ pub mod config;
 pub mod models;
 pub mod schema;
 
-use axum::{routing::get, Router};
+use axum::{
+    routing::{get, post},
+    Router,
+};
 
 mod entrypoints {
-    pub mod db_example;
+    pub mod create_album;
+    pub mod get_albums;
     pub mod rest;
-    pub mod test_album;
+    pub mod test;
 }
 
 mod usecases {
-    pub mod db;
+    pub mod create_album;
+    pub mod get_albums;
     pub mod test;
 }
 
 mod repository {
-    pub mod get_albums;
+    pub mod albums;
 }
 
 #[tokio::main]
@@ -34,7 +39,8 @@ fn example_routes() -> Router {
     let db_conn = config::get_connection_pool();
 
     Router::new()
-        .route("/", get(entrypoints::test_album::handler))
-        .route("/db", get(entrypoints::db_example::handler))
+        .route("/", get(entrypoints::test::handler))
+        .route("/get", get(entrypoints::get_albums::handler))
+        .route("/create", post(entrypoints::create_album::handler))
         .with_state(db_conn)
 }

@@ -3,7 +3,7 @@ use diesel::{
     Connection, MysqlConnection,
 };
 use dotenvy::dotenv;
-use std::env;
+use std::{env, time::Duration};
 
 pub type DbPool = Pool<ConnectionManager<MysqlConnection>>;
 
@@ -24,6 +24,7 @@ pub fn get_connection_pool() -> DbPool {
     // when building a connection pool
     Pool::builder()
         .test_on_check_out(true)
+        .connection_timeout(Duration::from_secs(3))
         .build(manager)
         .expect("Could not build db connection pool")
 }

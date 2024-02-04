@@ -24,9 +24,12 @@ pub async fn handler(
 
     match res {
         Ok(res) => (StatusCode::OK, rest::descf(res)),
-        Err(e) => (
-            StatusCode::INTERNAL_SERVER_ERROR,
-            rest::descf(e.to_string()),
-        ),
+        Err(e) => match e {
+            usecases::errors::UsecaseError::DatabaseError(desc) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                rest::descf("Database error: ".to_owned().push_str(desc.as_str())),
+            ),
+            other => (StatusCode::BAD_REQUEST, rest::descf(other)),
+        },
     }
 }

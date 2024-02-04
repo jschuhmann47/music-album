@@ -25,9 +25,6 @@ pub async fn handler(
 
     match res {
         Ok(res) => (StatusCode::OK, rest::descf(res)),
-        Err(e) => (
-            StatusCode::INTERNAL_SERVER_ERROR,
-            rest::descf(e.to_string()),
-        ),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, rest::descf(e)),
     }
 }

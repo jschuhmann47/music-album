@@ -19,6 +19,7 @@ mod entrypoints {
 mod usecases {
     pub mod create_album;
     pub mod delete_album;
+    pub mod errors;
     pub mod get_albums;
     pub mod test;
     pub mod update_album;

@@ -4,23 +4,35 @@ use diesel::{Connection, ExpressionMethods, QueryDsl, SelectableHelper};
 use crate::schema::albums::id;
 use crate::{config, models, schema};
 
-pub fn get(
-    db_conn: config::DbPool,
-    limit: u32,
-) -> Result<Vec<models::Album>, diesel::result::Error> {
+pub struct DbError {
+    error: String,
+}
+impl DbError {
+    pub fn new(error: diesel::result::Error) -> DbError {
+        DbError {
+            error: error.to_string(),
+        }
+    }
+    pub fn get(&self) -> &String {
+        &self.error
+    }
+}
+
+pub fn get(db_conn: config::DbPool, limit: u32) -> Result<Vec<models::Album>, DbError> {
     use self::schema::albums::dsl::*;
     // todo define custom errors
     let db = &mut db_conn.get().expect("error getting pool");
-    albums
+    match albums
         .limit(limit.into())
         .select(models::Album::as_select())
         .load(db)
+    {
+        Ok(res) => Ok(res),
+        Err(err) => Err(DbError::new(err)),
+    }
 }
 
-pub fn create(
-    db_conn: config::DbPool,
-    album: models::Album,
-) -> Result<models::Album, diesel::result::Error> {
+pub fn create(db_conn: config::DbPool, album: models::Album) -> Result<models::Album, DbError> {
     use self::schema::albums;
     let db = &mut db_conn.get().expect("error getting pool");
 
@@ -35,14 +47,11 @@ pub fn create(
     });
     match res {
         Ok(res) => Ok(res),
-        Err(_) => Err(diesel::result::Error::AlreadyInTransaction), //change this err
+        Err(err) => Err(DbError::new(err)),
     }
 }
 
-pub fn update(
-    db_conn: config::DbPool,
-    album: models::Album,
-) -> Result<models::Album, diesel::result::Error> {
+pub fn update(db_conn: config::DbPool, album: models::Album) -> Result<models::Album, DbError> {
     use self::schema::albums;
     let db = &mut db_conn.get().expect("error getting pool");
 
@@ -58,11 +67,11 @@ pub fn update(
     });
     match res {
         Ok(res) => Ok(res),
-        Err(_) => Err(diesel::result::Error::AlreadyInTransaction), //change this err
+        Err(err) => Err(DbError::new(err)),
     }
 }
 
-pub fn delete(db_conn: config::DbPool, album_id: i32) -> Result<(), diesel::result::Error> {
+pub fn delete(db_conn: config::DbPool, album_id: i32) -> Result<(), DbError> {
     use self::schema::albums;
     // todo define custom errors
     let db = &mut db_conn.get().expect("error getting pool");
@@ -74,6 +83,6 @@ pub fn delete(db_conn: config::DbPool, album_id: i32) -> Result<(), diesel::resu
     });
     match res {
         Ok(_) => Ok(()),
-        Err(_) => Err(diesel::result::Error::AlreadyInTransaction), //change this err
+        Err(err) => Err(DbError::new(err)),
     }
 }

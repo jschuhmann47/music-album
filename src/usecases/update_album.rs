@@ -4,11 +4,27 @@ use crate::{
     repository,
 };
 
+use super::errors::UsecaseError;
+
 pub fn execute(
     db_conn: config::DbPool,
     request: entrypoints::update_album::UpdateRequest,
-) -> Result<models::Album, diesel::result::Error> {
-    // TODO validate
+) -> Result<models::Album, UsecaseError> {
+    if request.id <= 0 {
+        return Err(UsecaseError::InvalidID);
+    }
+    if request.title == "" {
+        return Err(UsecaseError::InvalidTitle);
+    }
+    if request.artist == "" {
+        return Err(UsecaseError::InvalidArtist);
+    }
+    if request.cover == "" {
+        return Err(UsecaseError::InvalidCover);
+    }
+    if request.year <= 0 {
+        return Err(UsecaseError::InvalidYear);
+    }
     let album = models::Album {
         id: request.id,
         title: request.title,
@@ -17,5 +33,8 @@ pub fn execute(
         year: request.year,
     };
 
-    repository::albums::update(db_conn, album)
+    match repository::albums::update(db_conn, album) {
+        Ok(res) => Ok(res),
+        Err(err) => Err(UsecaseError::DatabaseError(err.get().to_string())),
+    }
 }

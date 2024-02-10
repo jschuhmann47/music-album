@@ -4,19 +4,9 @@ use diesel::{Connection, ExpressionMethods, QueryDsl, SelectableHelper};
 use crate::schema::albums::id;
 use crate::{config, models, schema};
 
-pub struct DbError {
-    error: String,
-}
-impl DbError {
-    pub fn new(error: diesel::result::Error) -> DbError {
-        DbError {
-            error: error.to_string(),
-        }
-    }
-    pub fn get(&self) -> &String {
-        &self.error
-    }
-}
+use super::errors::DbError;
+
+
 
 pub fn get(db_conn: config::DbPool, limit: u32) -> Result<Vec<models::Album>, DbError> {
     use self::schema::albums::dsl::*;

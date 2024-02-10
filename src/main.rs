@@ -12,7 +12,7 @@ mod entrypoints {
     pub mod delete_album;
     pub mod get_albums;
     pub mod rest;
-    pub mod test;
+    pub mod login;
     pub mod update_album;
 }
 
@@ -21,12 +21,19 @@ mod usecases {
     pub mod delete_album;
     pub mod errors;
     pub mod get_albums;
-    pub mod test;
     pub mod update_album;
+    pub mod login;
 }
 
 mod repository {
     pub mod albums;
+    pub mod users;
+    pub mod errors;
+}
+
+mod utils {
+    pub mod hash;
+    pub mod jwt;
 }
 
 #[tokio::main]
@@ -44,7 +51,7 @@ fn example_routes() -> Router {
     let db_conn = config::get_connection_pool();
 
     Router::new()
-        .route("/", get(entrypoints::test::handler))
+        .route("/", get(entrypoints::login::handler))
         .route("/get", get(entrypoints::get_albums::handler))
         .route("/create", post(entrypoints::create_album::handler))
         .route("/update", put(entrypoints::update_album::handler))

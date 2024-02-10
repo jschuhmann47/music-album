@@ -8,5 +8,6 @@ pub enum UsecaseError {
     InvalidID,
     InvalidArtist,
     InvalidLimit,
+    InvalidUsernameOrPassword,
     DatabaseError(String),
 }

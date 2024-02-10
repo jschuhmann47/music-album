@@ -1,0 +1,6 @@
+milestone 2:
+usuarios!
+- tabla usuarios
+- user_id en tabla de albums
+- agregar columnas de created_at, updated_at, deleted_at 
+- permisos?? alguna cookie rancia o jwt?

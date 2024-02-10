@@ -20,10 +20,10 @@ impl DbError {
 
 pub fn get(db_conn: config::DbPool, limit: u32) -> Result<Vec<models::Album>, DbError> {
     use self::schema::albums::dsl::*;
-    // todo define custom errors
     let db = &mut db_conn.get().expect("error getting pool");
     match albums
         .limit(limit.into())
+        .order(id.desc())
         .select(models::Album::as_select())
         .load(db)
     {

@@ -55,6 +55,7 @@ fn example_routes() -> Router {
     let db_conn = config::get_connection_pool();
 
     Router::new()
+        .route("/login", post(entrypoints::auth::handler))
         .route("/", get(entrypoints::login::handler))
         .route("/get", get(entrypoints::get_albums::handler))
         .route("/create", post(entrypoints::create_album::handler))

@@ -21,17 +21,19 @@ pub async fn handler(headers: HeaderMap) -> (StatusCode, Json<Value>) {
         Some(t) => t,
         None => return (StatusCode::INTERNAL_SERVER_ERROR, rest::descf("no auth"))
     };
-    let token = parse_token(user_agent);
+    println!("{:?}", user_agent);
+    (StatusCode::OK, rest::descf("ok"))
+    // let token = parse_token(user_agent);
 
-    let res = usecases::auth::execute();
-    // todo make optional parameters
-    match res {
-        Ok(res) => (StatusCode::OK, rest::descf(res)),
-        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, rest::descf(e)),
-    }
+    // let res = usecases::auth::execute();
+    // // todo make optional parameters
+    // match res {
+    //     Ok(res) => (StatusCode::OK, rest::descf(res)),
+    //     Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, rest::descf(e)),
+    // }
 }
 
-fn parse_token(raw_request: String) -> (String, String) {
-    let list: Vec<&str> = raw_request.split_whitespace().collect();
-    (list.get)
-}
+// fn parse_token(raw_request: String) -> (String, String) {
+//     let list: Vec<&str> = raw_request.split_whitespace().collect();
+//     (list.get)
+// }

@@ -15,6 +15,7 @@ mod entrypoints {
     pub mod rest;
     pub mod login;
     pub mod update_album;
+    pub mod auth;
 }
 
 mod usecases {
@@ -24,6 +25,7 @@ mod usecases {
     pub mod get_albums;
     pub mod update_album;
     pub mod login;
+    pub mod auth;
 }
 
 mod repository {

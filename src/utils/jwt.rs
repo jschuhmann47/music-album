@@ -5,7 +5,6 @@ use jsonwebtoken::{encode, decode, Header, Validation, EncodingKey, DecodingKey,
 use serde::{Deserialize, Serialize};
 
 
-
 // https://github.com/Keats/jsonwebtoken/blob/master/examples/validation.rs
 
 #[derive(Debug, Serialize, Deserialize)]

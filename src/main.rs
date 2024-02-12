@@ -6,6 +6,7 @@ use axum::{
     routing::{delete, get, post, put},
     Router,
 };
+use dotenvy::dotenv;
 
 mod entrypoints {
     pub mod create_album;
@@ -38,6 +39,7 @@ mod utils {
 
 #[tokio::main]
 async fn main() {
+    dotenv().ok();
     let app = Router::new().merge(example_routes());
 
     let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")

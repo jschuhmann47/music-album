@@ -1,8 +1,15 @@
-use crate::{config, models, repository, utils};
+use serde::Serialize;
+
+use crate::{config, repository, utils};
 
 use super::errors::UsecaseError;
 
-pub fn execute(db_conn: config::DbPool, username: String, password: String) -> Result<models::User, UsecaseError> {
+#[derive(Serialize)]
+pub struct LoginResponse {
+    token: String,
+}
+
+pub fn execute(db_conn: config::DbPool, username: String, password: String) -> Result<LoginResponse, UsecaseError> {
    if username == "" || password == "" {
     return Err(UsecaseError::InvalidUsernameOrPassword);
    }
@@ -19,8 +26,10 @@ pub fn execute(db_conn: config::DbPool, username: String, password: String) -> R
         return Err(UsecaseError::InvalidUsernameOrPassword);
     }
 
-    // return token 
+    match utils::jwt::generate_token(user.id.unsigned_abs()) {
+        Ok(token) => Ok(LoginResponse{token}),
+        Err(_) => Err(UsecaseError::ErrorGeneratingToken),
+    }
 
-    Ok(user)
 
 }

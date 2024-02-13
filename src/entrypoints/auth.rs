@@ -1,9 +1,9 @@
-use axum::{extract::State, http::{header, HeaderMap, StatusCode}, Json};
+use axum::{extract::Request, http::{header, HeaderMap, StatusCode}, middleware, Json};
 use serde::Deserialize;
 use serde_json::Value;
 
 use super::rest;
-use crate::{config, usecases};
+use crate::usecases;
 
 
 #[derive(Deserialize)]
@@ -15,15 +15,15 @@ pub struct UpdateRequest {
     pub year: i32,
 }
 
-pub async fn handler(headers: HeaderMap) -> (StatusCode, Json<Value>) {
+pub async fn auth(headers: HeaderMap, request: Request, next: middleware::Next) -> (StatusCode, Json<Value>) {
     // get token from header
     let auth_header = match headers.get(header::AUTHORIZATION) {
         Some(t) => t,
-        None => return (StatusCode::INTERNAL_SERVER_ERROR, rest::descf("no auth"))
+        None => return (StatusCode::BAD_REQUEST, rest::descf("no auth"))
     };
     let auth_header = match auth_header.to_str() {
         Ok(str) => str,
-        Err(_) => return (StatusCode::BAD_REQUEST, rest::descf("failed to parse header"))
+        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, rest::descf("failed to parse header"))
     };
 
     let token = match parse_token(auth_header.to_string()) {
@@ -37,6 +37,8 @@ pub async fn handler(headers: HeaderMap) -> (StatusCode, Json<Value>) {
     match res {
         Ok(res) => {
             println!("{:?}", res);
+            let response =  next.run(request).await;
+            println!("{:?}", response);
             (StatusCode::OK, rest::descf(""))
         },
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, rest::descf(e)),

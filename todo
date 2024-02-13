@@ -4,3 +4,6 @@ usuarios!
 - user_id en tabla de albums
 - agregar columnas de created_at, updated_at, deleted_at 
 - permisos?? alguna cookie rancia o jwt?
+
+
+example valid token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImV4cCI6MTgxNjIzOTAyMn0.9lXn3zjnyjEKfBQS5wY5dBhxkUXKpoFii54QIvxsLtA

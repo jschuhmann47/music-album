@@ -3,35 +3,37 @@ pub mod models;
 pub mod schema;
 
 use axum::{
-    middleware::from_fn, routing::{delete, get, post, put}, Router
+    middleware::from_fn,
+    routing::{delete, get, post, put},
+    Router,
 };
 use config::DbPool;
 use dotenvy::dotenv;
 
 mod entrypoints {
+    pub mod auth;
     pub mod create_album;
     pub mod delete_album;
     pub mod get_albums;
-    pub mod rest;
     pub mod login;
+    pub mod rest;
     pub mod update_album;
-    pub mod auth;
 }
 
 mod usecases {
+    pub mod auth;
     pub mod create_album;
     pub mod delete_album;
     pub mod errors;
     pub mod get_albums;
-    pub mod update_album;
     pub mod login;
-    pub mod auth;
+    pub mod update_album;
 }
 
 mod repository {
     pub mod albums;
-    pub mod users;
     pub mod errors;
+    pub mod users;
 }
 
 mod utils {
@@ -43,7 +45,10 @@ mod utils {
 async fn main() {
     dotenv().ok();
     let db_conn = config::get_connection_pool();
-    let app = Router::new().merge(private_routers()).merge(public_routes()).with_state(db_conn);
+    let app = Router::new()
+        .merge(private_routers())
+        .merge(public_routes())
+        .with_state(db_conn);
 
     let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
         .await
@@ -59,14 +64,10 @@ fn private_routers() -> Router<DbPool> {
         .route("/create", post(entrypoints::create_album::handler))
         .route("/update", put(entrypoints::update_album::handler))
         .route("/delete/:id", delete(entrypoints::delete_album::handler))
-        .layer(
-            tower::ServiceBuilder::new()
-            .layer(from_fn(entrypoints::auth::auth))
-        )
+        .layer(tower::ServiceBuilder::new().layer(from_fn(entrypoints::auth::auth)))
 }
 
 fn public_routes() -> Router<DbPool> {
     // https://docs.rs/axum/latest/axum/middleware/index.html#passing-state-from-middleware-to-handlers
-    Router::new()
-        .route("/", get(entrypoints::login::handler))
+    Router::new().route("/", get(entrypoints::login::handler))
 }

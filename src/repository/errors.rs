@@ -1,4 +1,3 @@
-
 pub struct DbError {
     error: String,
 }

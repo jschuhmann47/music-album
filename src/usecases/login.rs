@@ -9,11 +9,15 @@ pub struct LoginResponse {
     token: String,
 }
 
-pub fn execute(db_conn: config::DbPool, username: String, password: String) -> Result<LoginResponse, UsecaseError> {
-   if username == "" || password == "" {
-    return Err(UsecaseError::InvalidUsernameOrPassword);
-   }
-   let hashed_pass = utils::hash::sha256(password); 
+pub fn execute(
+    db_conn: config::DbPool,
+    username: String,
+    password: String,
+) -> Result<LoginResponse, UsecaseError> {
+    if username == "" || password == "" {
+        return Err(UsecaseError::InvalidUsernameOrPassword);
+    }
+    let hashed_pass = utils::hash::sha256(password);
 
     let user = match repository::users::get_by_username(db_conn, username) {
         Ok(res) => res,
@@ -27,9 +31,7 @@ pub fn execute(db_conn: config::DbPool, username: String, password: String) -> R
     }
 
     match utils::jwt::generate_token(user.id.unsigned_abs()) {
-        Ok(token) => Ok(LoginResponse{token}),
+        Ok(token) => Ok(LoginResponse { token }),
         Err(_) => Err(UsecaseError::ErrorGeneratingToken),
     }
-
-
 }

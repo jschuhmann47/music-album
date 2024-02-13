@@ -6,7 +6,6 @@ use crate::{config, models};
 
 use super::errors::DbError;
 
-
 pub fn get_by_username(db_conn: config::DbPool, usrname: String) -> Result<models::User, DbError> {
     use crate::schema::users::dsl::*;
     let db = &mut db_conn.get().expect("error getting pool");
@@ -17,8 +16,12 @@ pub fn get_by_username(db_conn: config::DbPool, usrname: String) -> Result<model
     {
         Ok(res) => Ok(res),
         Err(err) => match err {
-            diesel::result::Error::NotFound => Ok(User{id: 0, username: String::from(""), password: String::from("")}),
-            err => Err(DbError::new(err))
-        }
+            diesel::result::Error::NotFound => Ok(User {
+                id: 0,
+                username: String::from(""),
+                password: String::from(""),
+            }),
+            err => Err(DbError::new(err)),
+        },
     }
 }

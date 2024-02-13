@@ -8,3 +8,7 @@ where
 {
     Json(json!({"description": t}))
 }
+
+pub struct ResponseBody {
+    description: Json<Value>,
+}

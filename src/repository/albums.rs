@@ -6,8 +6,6 @@ use crate::{config, models, schema};
 
 use super::errors::DbError;
 
-
-
 pub fn get(db_conn: config::DbPool, limit: u32) -> Result<Vec<models::Album>, DbError> {
     use self::schema::albums::dsl::*;
     let db = &mut db_conn.get().expect("error getting pool");

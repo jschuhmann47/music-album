@@ -9,12 +9,11 @@ pub enum AuthError {
 }
 
 pub fn execute(token: String) -> Result<TokenData<jwt::Claims>, AuthError> {
-   
     let token_data = match jwt::decode_token(token) {
         Ok(tk) => tk,
         Err(err) => {
             println!("{}", err);
-            return Err(AuthError::InvalidToken)
+            return Err(AuthError::InvalidToken);
         }
     };
 

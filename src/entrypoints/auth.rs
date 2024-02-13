@@ -5,13 +5,12 @@ use axum::{
     response::Response,
     Json,
 };
-use serde::Deserialize;
 use serde_json::Value;
 
-use super::rest;
 use crate::usecases;
 
-#[derive(Deserialize)]
+use super::rest;
+
 pub struct UpdateRequest {
     pub id: i32,
     pub title: String,
@@ -20,37 +19,45 @@ pub struct UpdateRequest {
     pub year: i32,
 }
 
-pub async fn auth(
-    headers: HeaderMap,
-    request: Request,
-    next: middleware::Next,
-) -> Result<Response, StatusCode> {
-    // get token from header
+pub async fn auth(headers: HeaderMap, request: Request, next: middleware::Next) -> Response {
     let auth_header = match headers.get(header::AUTHORIZATION) {
         Some(t) => t,
-        None => return Err(StatusCode::BAD_REQUEST),
+        None => {
+            return rest::response_body_2(
+                StatusCode::BAD_REQUEST,
+                String::from("failed to get header"),
+            )
+        }
     };
     let auth_header = match auth_header.to_str() {
         Ok(str) => str,
-        Err(_) => return Err(StatusCode::INTERNAL_SERVER_ERROR),
+        Err(_) => {
+            return rest::response_body_2(
+                StatusCode::BAD_REQUEST,
+                String::from("failed to parse header"),
+            )
+        }
     };
 
     let token = match parse_token(auth_header.to_string()) {
         Ok(token) => token,
-        Err(_) => return Err(StatusCode::BAD_REQUEST),
+        Err(err) => {
+            return rest::response_body_2(StatusCode::BAD_REQUEST, format!("error: {}", err))
+        }
     };
-
-    // (StatusCode::OK, rest::descf(token))
 
     let res = usecases::auth::execute(token);
     match res {
         Ok(res) => {
             println!("{:?}", res);
             let response = next.run(request).await;
-            println!("{:?}", response);
-            Ok(response)
+            // println!("{:?}", response);
+            response
         }
-        Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
+        Err(_) => rest::response_body_2(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            String::from("an error has ocurred"),
+        ),
     }
 }
 

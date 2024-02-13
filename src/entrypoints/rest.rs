@@ -1,4 +1,8 @@
-use axum::Json;
+use axum::{
+    body::Body,
+    http::{Response, StatusCode},
+    Json,
+};
 use serde::Serialize;
 use serde_json::{json, Value};
 
@@ -9,6 +13,13 @@ where
     Json(json!({"description": t}))
 }
 
-pub struct ResponseBody {
-    description: Json<Value>,
+struct DescResponse{
+    description: String
+}
+
+pub fn response_body_2(status: StatusCode, desc: String) -> Response<Body> {
+    Response::builder()
+        .status(status)
+        .body(Body::new(desc))
+        .unwrap()
 }

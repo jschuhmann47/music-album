@@ -1,5 +1,8 @@
 use axum::{
-    extract::Request, http::{header, HeaderMap, StatusCode}, middleware, response::Response
+    extract::Request,
+    http::{header, HeaderMap, StatusCode},
+    middleware,
+    response::Response,
 };
 
 use crate::usecases;
@@ -10,21 +13,29 @@ pub async fn auth(headers: HeaderMap, request: Request, next: middleware::Next) 
     let auth_header = match headers.get(header::AUTHORIZATION) {
         Some(t) => t,
         None => {
-            return rest::response_body(StatusCode::BAD_REQUEST, String::from("failed to get header"))
-            
+            return rest::response_body(
+                StatusCode::BAD_REQUEST,
+                String::from("failed to get header"),
+            )
         }
     };
     let auth_header = match auth_header.to_str() {
         Ok(str) => str,
         Err(_) => {
-            return rest::response_body(StatusCode::BAD_REQUEST, String::from("failed to parse header"))
+            return rest::response_body(
+                StatusCode::BAD_REQUEST,
+                String::from("failed to parse header"),
+            )
         }
     };
 
     let token = match parse_token(auth_header.to_string()) {
         Ok(token) => token,
         Err(_) => {
-            return rest::response_body(StatusCode::BAD_REQUEST, String::from("failed to parse token"))
+            return rest::response_body(
+                StatusCode::BAD_REQUEST,
+                String::from("failed to parse token"),
+            )
         }
     };
 
@@ -34,10 +45,7 @@ pub async fn auth(headers: HeaderMap, request: Request, next: middleware::Next) 
             let response = next.run(request).await;
             response
         }
-        Err(err) => rest::response_body(
-            StatusCode::INTERNAL_SERVER_ERROR,
-            err,
-        ),
+        Err(err) => rest::response_body(StatusCode::INTERNAL_SERVER_ERROR, err),
     }
 }
 

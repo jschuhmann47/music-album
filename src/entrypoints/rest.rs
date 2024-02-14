@@ -13,13 +13,13 @@ where
     Json(json!({"description": t}))
 }
 
-struct DescResponse{
-    description: String
-}
-
-pub fn response_body_2(status: StatusCode, desc: String) -> Response<Body> {
+pub fn response_body<T>(status: StatusCode, desc: T) -> Response<Body> 
+where T: Serialize,
+{
     Response::builder()
-        .status(status)
-        .body(Body::new(desc))
-        .unwrap()
+    .status(status)
+    .body(Body::from(json!({
+        "description": desc
+    }).to_string()))
+    .unwrap()
 }

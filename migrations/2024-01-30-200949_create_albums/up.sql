@@ -12,5 +12,5 @@ CREATE TABLE IF NOT EXISTS albums (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-INSERT INTO albums (created_at, title, artist, cover, year)
-VALUES (NOW() ,'Anchu band', 'Bring me the moon', 'https://www.slugmag.com/wp/wp-content/uploads/2013/05/bring-me-the-horizon-sempiternal.webp', 2020);
+INSERT INTO albums (created_at, title, artist, cover, year, user_id)
+VALUES (NOW() ,'Anchu band', 'Bring me the moon', 'https://www.slugmag.com/wp/wp-content/uploads/2013/05/bring-me-the-horizon-sempiternal.webp', 2020, 1);

@@ -3,6 +3,8 @@
 diesel::table! {
     albums (id) {
         id -> Integer,
+        created_at -> Datetime,
+        updated_at -> Nullable<Datetime>,
         #[max_length = 255]
         title -> Varchar,
         #[max_length = 255]
@@ -10,6 +12,7 @@ diesel::table! {
         #[max_length = 255]
         cover -> Varchar,
         year -> Integer,
+        user_id -> Integer,
     }
 }
 
@@ -23,4 +26,9 @@ diesel::table! {
     }
 }
 
-diesel::allow_tables_to_appear_in_same_query!(albums, users,);
+diesel::joinable!(albums -> users (user_id));
+
+diesel::allow_tables_to_appear_in_same_query!(
+    albums,
+    users,
+);

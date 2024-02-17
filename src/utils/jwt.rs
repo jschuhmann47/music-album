@@ -14,7 +14,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
-    pub sub: u32, // subject, can use user id
+    pub sub: u32, // subject, it's user's id
     pub exp: u64, // unix expiration date
 }
 

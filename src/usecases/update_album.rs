@@ -25,13 +25,14 @@ pub fn execute(
     if request.year <= 0 {
         return Err(UsecaseError::InvalidYear);
     }
-    let album = models::Album {
-        id: request.id,
-        title: request.title,
-        artist: request.artist,
-        cover: request.cover,
-        year: request.year,
-    };
+    let mut album = models::Album::new(
+        request.user_id,
+        request.title,
+        request.artist,
+        request.cover,
+        request.year,
+    );
+    album.id = request.id;
 
     match repository::albums::update(db_conn, album) {
         Ok(res) => Ok(res),

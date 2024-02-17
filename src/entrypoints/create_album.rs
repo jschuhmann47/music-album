@@ -1,4 +1,4 @@
-use axum::{extract::State, http::StatusCode, Json};
+use axum::{extract::State, http::StatusCode, Extension, Json};
 use serde::Deserialize;
 use serde_json::Value;
 
@@ -10,6 +10,7 @@ use crate::{config, usecases};
 
 #[derive(Deserialize)]
 pub struct CreateRequest {
+    pub user_id: i32,
     pub title: String,
     pub artist: String,
     pub cover: String,
@@ -18,8 +19,10 @@ pub struct CreateRequest {
 
 pub async fn handler(
     State(db_conn): State<config::DbPool>,
-    Json(req): Json<CreateRequest>,
+    Extension(user_id): Extension<i32>,
+    Json(mut req): Json<CreateRequest>,
 ) -> (StatusCode, Json<Value>) {
+    req.user_id = user_id;
     let res = usecases::create_album::execute(db_conn, req);
 
     match res {

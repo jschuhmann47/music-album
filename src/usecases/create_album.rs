@@ -8,6 +8,7 @@ use super::errors::UsecaseError;
 
 pub fn execute(
     db_conn: config::DbPool,
+
     request: entrypoints::create_album::CreateRequest,
 ) -> Result<models::Album, UsecaseError> {
     if request.title == "" {
@@ -23,13 +24,13 @@ pub fn execute(
         return Err(UsecaseError::InvalidYear);
     }
 
-    let album = models::Album {
-        id: 0,
-        title: request.title,
-        artist: request.artist,
-        cover: request.cover,
-        year: request.year,
-    };
+    let album = models::Album::new(
+        request.user_id,
+        request.title,
+        request.artist,
+        request.cover,
+        request.year,
+    );
 
     match repository::albums::create(db_conn, album) {
         Ok(res) => Ok(res),

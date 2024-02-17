@@ -9,7 +9,7 @@ use crate::usecases;
 
 use super::rest;
 
-pub async fn auth(headers: HeaderMap, request: Request, next: middleware::Next) -> Response {
+pub async fn auth(headers: HeaderMap, mut request: Request, next: middleware::Next) -> Response {
     let auth_header = match headers.get(header::AUTHORIZATION) {
         Some(t) => t,
         None => {
@@ -41,7 +41,9 @@ pub async fn auth(headers: HeaderMap, request: Request, next: middleware::Next) 
 
     let res = usecases::auth::execute(token);
     match res {
-        Ok(_) => {
+        Ok(token_data) => {
+            // https://stackoverflow.com/questions/76086106/axum-pass-value-from-middleware-to-route
+            request.extensions_mut().insert(token_data.claims.sub);
             let response = next.run(request).await;
             response
         }

@@ -42,8 +42,18 @@ pub async fn auth(headers: HeaderMap, mut request: Request, next: middleware::Ne
     let res = usecases::auth::execute(token);
     match res {
         Ok(token_data) => {
+            let user_id = token_data.claims.sub;
+
+            //todo check this
+            let expiration_date = token_data.claims.exp;
+            if user_id == 0 {
+                return rest::response_body(
+                    StatusCode::BAD_REQUEST,
+                    String::from("invalid user id"),
+                );
+            }
             // https://stackoverflow.com/questions/76086106/axum-pass-value-from-middleware-to-route
-            request.extensions_mut().insert(token_data.claims.sub);
+            request.extensions_mut().insert(user_id);
             let response = next.run(request).await;
             response
         }

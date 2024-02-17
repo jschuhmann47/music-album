@@ -6,6 +6,9 @@ use serde::Serialize;
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 pub struct Album {
     pub id: i32,
+    pub user_id: i32,
+    created_at: chrono::NaiveDateTime,
+    updated_at: Option<chrono::NaiveDateTime>,
     pub title: String,
     pub artist: String,
     pub cover: String,

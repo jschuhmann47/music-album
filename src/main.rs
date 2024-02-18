@@ -72,6 +72,6 @@ fn private_routers() -> Router<DbPool> {
 fn public_routes() -> Router<DbPool> {
     // https://docs.rs/axum/latest/axum/middleware/index.html#passing-state-from-middleware-to-handlers
     Router::new()
-        .route("/", get(entrypoints::login::handler))
+        .route("/login", post(entrypoints::login::handler))
         .route("/signup", post(entrypoints::create_user::handler))
 }

@@ -16,7 +16,7 @@ pub async fn auth(headers: HeaderMap, mut request: Request, next: middleware::Ne
         Some(t) => t,
         None => {
             return rest::response_body(
-                StatusCode::BAD_REQUEST,
+                StatusCode::INTERNAL_SERVER_ERROR,
                 String::from("failed to get header"),
             )
         }
@@ -25,7 +25,7 @@ pub async fn auth(headers: HeaderMap, mut request: Request, next: middleware::Ne
         Ok(str) => str,
         Err(_) => {
             return rest::response_body(
-                StatusCode::BAD_REQUEST,
+                StatusCode::INTERNAL_SERVER_ERROR,
                 String::from("failed to parse header"),
             )
         }
@@ -56,7 +56,7 @@ pub async fn auth(headers: HeaderMap, mut request: Request, next: middleware::Ne
             let time_now = SystemTime::now().duration_since(UNIX_EPOCH).expect("Time went backwards");
             if time_now.as_secs() >= expiration_date {
                 return rest::response_body(
-                    StatusCode::BAD_REQUEST,
+                    StatusCode::UNAUTHORIZED,
                     String::from("expired token"),
                 );
             }
@@ -66,7 +66,7 @@ pub async fn auth(headers: HeaderMap, mut request: Request, next: middleware::Ne
             let response = next.run(request).await;
             response
         }
-        Err(err) => rest::response_body(StatusCode::INTERNAL_SERVER_ERROR, err),
+        Err(err) => rest::response_body(StatusCode::UNAUTHORIZED, err),
     }
 }
 

@@ -1,16 +1,21 @@
 use diesel::RunQueryDsl;
 use diesel::{Connection, ExpressionMethods, QueryDsl, SelectableHelper};
 
-use crate::schema::albums::id;
+use crate::schema::albums::{id, user_id};
 use crate::{config, models, schema};
 
 use super::errors::DbError;
 
-pub fn get(db_conn: config::DbPool, limit: u32) -> Result<Vec<models::Album>, DbError> {
+pub fn get(
+    db_conn: config::DbPool,
+    user_id_filter: i32,
+    limit: u32,
+) -> Result<Vec<models::Album>, DbError> {
     use self::schema::albums::dsl::*;
     let db = &mut db_conn.get().expect("error getting pool");
     match albums
         .limit(limit.into())
+        .filter(user_id.eq(user_id_filter))
         .order(id.desc())
         .select(models::Album::as_select())
         .load(db)
@@ -59,7 +64,7 @@ pub fn update(db_conn: config::DbPool, album: models::Album) -> Result<models::A
     }
 }
 
-pub fn delete(db_conn: config::DbPool, album_id: i32) -> Result<(), DbError> {
+pub fn delete(db_conn: config::DbPool, user_id_filter: i32, album_id: i32) -> Result<(), DbError> {
     use self::schema::albums;
     // todo define custom errors
     let db = &mut db_conn.get().expect("error getting pool");
@@ -67,6 +72,7 @@ pub fn delete(db_conn: config::DbPool, album_id: i32) -> Result<(), DbError> {
     let res = db.transaction(|db| {
         diesel::delete(albums::table)
             .filter(id.eq(album_id))
+            .filter(user_id.eq(user_id_filter))
             .execute(db)
     });
     match res {

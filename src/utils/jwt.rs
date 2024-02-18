@@ -14,18 +14,18 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
-    pub sub: u32, // subject, it's user's id
+    pub sub: i32, // subject, it's user's id
     pub exp: u64, // unix expiration date
 }
 
-fn new_claim(user_id: u32) -> Claims {
+fn new_claim(user_id: i32) -> Claims {
     Claims {
         sub: user_id,
         exp: time_now(),
     }
 }
 
-pub fn generate_token(user_id: u32) -> Result<String, JWTError> {
+pub fn generate_token(user_id: i32) -> Result<String, JWTError> {
     // todo don't load from env everytime
     let secret = env::var("JWT_SECRET").expect("failed to load jwt secret");
     encode(

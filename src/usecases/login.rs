@@ -30,7 +30,7 @@ pub fn execute(
         return Err(UsecaseError::InvalidUsernameOrPassword);
     }
 
-    match utils::jwt::generate_token(user.id.unsigned_abs()) {
+    match utils::jwt::generate_token(user.id) {
         Ok(token) => Ok(LoginResponse { token }),
         Err(_) => Err(UsecaseError::ErrorGeneratingToken),
     }

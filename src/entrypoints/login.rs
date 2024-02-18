@@ -5,9 +5,6 @@ use serde_json::Value;
 use super::rest;
 use crate::{config, usecases};
 
-// https://docs.rs/axum/latest/axum/#extractors
-// van al final!
-
 #[derive(Deserialize)]
 pub struct LoginRequest {
     username: String,

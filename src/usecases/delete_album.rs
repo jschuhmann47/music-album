@@ -9,7 +9,7 @@ pub fn execute(
     if request.id <= 0 {
         return Err(UsecaseError::InvalidID);
     }
-    match repository::albums::delete(db_conn, request.id) {
+    match repository::albums::delete(db_conn, request.user_id, request.id) {
         Ok(res) => Ok(res),
         Err(err) => Err(UsecaseError::DatabaseError(err.get().to_string())),
     }

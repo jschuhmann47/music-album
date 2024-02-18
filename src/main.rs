@@ -13,23 +13,23 @@ use dotenvy::dotenv;
 mod entrypoints {
     pub mod auth;
     pub mod create_album;
+    pub mod create_user;
     pub mod delete_album;
     pub mod get_albums;
     pub mod login;
     pub mod rest;
     pub mod update_album;
-    pub mod create_user;
 }
 
 mod usecases {
     pub mod auth;
     pub mod create_album;
+    pub mod create_user;
     pub mod delete_album;
     pub mod errors;
     pub mod get_albums;
     pub mod login;
     pub mod update_album;
-    pub mod create_user;
 }
 
 mod repository {

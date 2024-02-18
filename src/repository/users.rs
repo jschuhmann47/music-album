@@ -6,7 +6,10 @@ use crate::{config, models};
 
 use super::errors::DbError;
 
-pub fn get_by_username(db_conn: &config::DbPool, usrname: &String) -> Result<models::User, DbError> {
+pub fn get_by_username(
+    db_conn: &config::DbPool,
+    usrname: &String,
+) -> Result<models::User, DbError> {
     use crate::schema::users::dsl::*;
     let db = &mut db_conn.get().expect("error getting pool");
     match users

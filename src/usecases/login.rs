@@ -19,7 +19,7 @@ pub fn execute(
     }
     let hashed_pass = utils::hash::sha256(password);
 
-    let user = match repository::users::get_by_username(db_conn, username) {
+    let user = match repository::users::get_by_username(&db_conn, &username) {
         Ok(res) => res,
         Err(err) => return Err(UsecaseError::DatabaseError(err.get().to_string())),
     };

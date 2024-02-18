@@ -28,4 +28,7 @@ diesel::table! {
 
 diesel::joinable!(albums -> users (user_id));
 
-diesel::allow_tables_to_appear_in_same_query!(albums, users,);
+diesel::allow_tables_to_appear_in_same_query!(
+    albums,
+    users,
+);

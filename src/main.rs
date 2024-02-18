@@ -18,6 +18,7 @@ mod entrypoints {
     pub mod login;
     pub mod rest;
     pub mod update_album;
+    pub mod create_user;
 }
 
 mod usecases {
@@ -28,6 +29,7 @@ mod usecases {
     pub mod get_albums;
     pub mod login;
     pub mod update_album;
+    pub mod create_user;
 }
 
 mod repository {
@@ -69,5 +71,7 @@ fn private_routers() -> Router<DbPool> {
 
 fn public_routes() -> Router<DbPool> {
     // https://docs.rs/axum/latest/axum/middleware/index.html#passing-state-from-middleware-to-handlers
-    Router::new().route("/", get(entrypoints::login::handler))
+    Router::new()
+        .route("/", get(entrypoints::login::handler))
+        .route("/signup", post(entrypoints::create_user::handler))
 }

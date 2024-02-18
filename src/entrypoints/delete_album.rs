@@ -4,7 +4,7 @@ use axum::{
     Extension, Json,
 };
 use serde::Deserialize;
-use serde_json::Value;
+use serde_json::{json, Value};
 
 use super::rest;
 use crate::{config, usecases};
@@ -27,7 +27,7 @@ pub async fn handler(
     let res = usecases::delete_album::execute(db_conn, req);
 
     match res {
-        Ok(res) => (StatusCode::OK, rest::descf(res)),
+        Ok(_) => (StatusCode::OK, Json(json!({}))),
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, rest::descf(e)),
     }
 }

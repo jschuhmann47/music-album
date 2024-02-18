@@ -1,3 +1,5 @@
+use std::time::{SystemTime, UNIX_EPOCH};
+
 use axum::{
     extract::Request,
     http::{header, HeaderMap, StatusCode},
@@ -43,15 +45,22 @@ pub async fn auth(headers: HeaderMap, mut request: Request, next: middleware::Ne
     match res {
         Ok(token_data) => {
             let user_id = token_data.claims.sub;
-
-            //todo check this
-            let expiration_date = token_data.claims.exp;
             if user_id == 0 {
                 return rest::response_body(
                     StatusCode::BAD_REQUEST,
                     String::from("invalid user id"),
                 );
             }
+
+            let expiration_date = token_data.claims.exp;
+            let time_now = SystemTime::now().duration_since(UNIX_EPOCH).expect("Time went backwards");
+            if time_now.as_secs() >= expiration_date {
+                return rest::response_body(
+                    StatusCode::BAD_REQUEST,
+                    String::from("expired token"),
+                );
+            }
+
             // https://stackoverflow.com/questions/76086106/axum-pass-value-from-middleware-to-route
             request.extensions_mut().insert(user_id);
             let response = next.run(request).await;

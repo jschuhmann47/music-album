@@ -16,8 +16,8 @@ pub async fn auth(headers: HeaderMap, mut request: Request, next: middleware::Ne
         Some(t) => t,
         None => {
             return rest::response_body(
-                StatusCode::INTERNAL_SERVER_ERROR,
-                String::from("failed to get header"),
+                StatusCode::BAD_REQUEST,
+                String::from("failed to parse token"),
             )
         }
     };
@@ -25,8 +25,8 @@ pub async fn auth(headers: HeaderMap, mut request: Request, next: middleware::Ne
         Ok(str) => str,
         Err(_) => {
             return rest::response_body(
-                StatusCode::INTERNAL_SERVER_ERROR,
-                String::from("failed to parse header"),
+                StatusCode::BAD_REQUEST,
+                String::from("failed to parse token"),
             )
         }
     };

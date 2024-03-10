@@ -15,4 +15,4 @@ You can create users, and each user can create, upload or delete music albums. I
 - Repository layer: interacts with the database
 
 ## Demo
-todo!
+[output.webm](https://github.com/jschuhmann47/music-album/assets/76596375/f3fe2560-0c4f-4017-9832-6b2074543ebf)

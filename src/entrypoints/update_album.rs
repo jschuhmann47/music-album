@@ -7,7 +7,9 @@ use crate::{config, usecases};
 
 #[derive(Deserialize)]
 pub struct UpdateRequest {
+    #[serde(skip_deserializing)]
     pub user_id: i32,
+
     pub id: i32,
     pub title: String,
     pub artist: String,

@@ -8,7 +8,6 @@ use crate::{config, usecases};
 #[derive(Deserialize)]
 pub struct CreateUserRequest {
     pub username: String,
-    // won't add secure restrictions
     pub password: String,
 }
 

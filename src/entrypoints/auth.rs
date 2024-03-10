@@ -53,7 +53,9 @@ pub async fn auth(headers: HeaderMap, mut request: Request, next: middleware::Ne
             }
 
             let expiration_date = token_data.claims.exp;
-            let time_now = SystemTime::now().duration_since(UNIX_EPOCH).expect("Time went backwards");
+            let time_now = SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .expect("Time went backwards");
             if time_now.as_secs() >= expiration_date {
                 return rest::response_body(
                     StatusCode::UNAUTHORIZED,
@@ -61,7 +63,6 @@ pub async fn auth(headers: HeaderMap, mut request: Request, next: middleware::Ne
                 );
             }
 
-            // https://stackoverflow.com/questions/76086106/axum-pass-value-from-middleware-to-route
             request.extensions_mut().insert(user_id);
             let response = next.run(request).await;
             response

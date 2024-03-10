@@ -11,7 +11,9 @@ use crate::{config, usecases};
 
 #[derive(Deserialize)]
 pub struct DeleteRequest {
+    #[serde(skip_deserializing)]
     pub user_id: i32,
+
     pub id: i32,
 }
 

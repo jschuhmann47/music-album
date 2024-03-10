@@ -1,6 +1,6 @@
 # Music Album API
 
-A small API that I made to practice the Rust language. Used Axum and Diesel (with MySQL) plus some other stuff.
+A small API that I made to practice Rust. Used Axum and Diesel (with MySQL) plus some other stuff.
 
 You can create users, and each user can create, upload or delete music albums. It's like a physical collection of CDs but digitally.
 

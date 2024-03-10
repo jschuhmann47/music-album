@@ -66,7 +66,6 @@ pub fn update(db_conn: config::DbPool, album: models::Album) -> Result<models::A
 
 pub fn delete(db_conn: config::DbPool, user_id_filter: i32, album_id: i32) -> Result<(), DbError> {
     use self::schema::albums;
-    // todo define custom errors
     let db = &mut db_conn.get().expect("error getting pool");
 
     let res = db.transaction(|db| {

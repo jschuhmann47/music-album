@@ -24,7 +24,6 @@ pub async fn handler(
 ) -> (StatusCode, Json<Value>) {
     req.user_id = user_id;
     let res = usecases::update_album::execute(db_conn, req);
-    // todo make optional parameters
     match res {
         Ok(res) => (StatusCode::OK, rest::descf(res)),
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, rest::descf(e)),
